@@ -8,7 +8,8 @@ Simple and beginner-friendly C++ + Arduino setup
 
 Offline speech recognition (optional)
 
-Serial communication between Python and microcontroller
+Serial communication between Python and microcontroller(uscing IP Adderss of microcontroller)
+
 
 🧰 Tech Stack
 Creat a WEB Page for Speech Recognition and Command Processing
@@ -17,7 +18,6 @@ Arduino UNO / ESP32 (for LED control)/Raspberry Pi Picow W
 In my case I use Raspberry Pi Pico W
 
 Connect the Web Page created to the Server of microcontroller
-speech_recognition (Python library)
 
 # 📦 Installation
 
