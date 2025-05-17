@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LED Control via Voice</title>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      background-color: #333;  /* Dark Grey Background */
+      color: white;            /* White text color */
+      text-align: center;
+      padding: 50px;
+    }
+    h1 {
+      color: #4CAF50;
+    }
+    .button {
+      font-size: 20px;
+      padding: 15px 30px;
+      margin: 20px;
+      cursor: pointer;
+      border: none;
+      background-color: white;  /* White button background */
+      color: black;             /* Black text on white button */
+      border-radius: 25px;      /* Curved edges */
+      transition: background-color 0.3s;
+    }
+    .button:hover {
+      background-color: #f2f2f2; /* Slightly darker shade on hover */
+    }
+    #status {
+      font-size: 24px;
+      margin-top: 20px;
+      font-weight: bold;
+    }
+    #led-status {
+      margin-top: 30px;
+      font-size: 18px;
+    }
+    .led-status-item {
+      margin: 5px 0;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>LED Control with Voice Commands</h1>
+
+  <!-- Button to start voice recognition -->
+  <button class="button" onclick="startRecognition()">Start Voice Command</button>
+
+  <!-- Display LED status -->
+  <div id="status">Command: Waiting for command...</div>
+
+  <div id="led-status">
+    <div class="led-status-item" id="led1-status">LED1 = unkown</div>
+    <div class="led-status-item" id="led2-status">LED2 = unkown</div>
+    <div class="led-status-item" id="led3-status">LED3 = unkown</div>
+    <div class="led-status-item" id="led4-status">LED4 = unkown</div>
+  </div>
+
+  <script>
+    // Create a SpeechRecognition object
+    const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+    recognition.lang = 'en-US';  // Set language to English
+    
+    //creat a variable to store the ip address
+    const ipAddress = 'http://192.168.116.240';
+    
+    // Start speech recognition
+    function startRecognition() {
+      recognition.start();
+    }
+
+
+    // When the recognition result is received
+    recognition.onresult = function(event) {
+      const command = event.results[0][0].transcript.toLowerCase();
+      document.getElementById("status").innerText = "Command: " + command;
+      // In case you want to creat a variable for the ip address
+
+      // const ipAddress = 'http://192.168.116.240';              //ip address of the server
+
+      // if (command.includes('turn on led one') || command.includes('turn on led 1')) {
+      //   fetch(`${ipAddress}/LED1=HIGH`);
+      // }
+      
+      // Check the command and send a request to the server
+
+      // LED control commands
+      if (command.includes('turn on led one') || command.includes('turn on led 1')) {
+        fetch('http://192.168.116.240/LED1=HIGH');
+          
+            document.getElementById("led1-status").innerText = "LED 1 = ON";
+
+      } else if (command.includes('turn off led one') || command.includes('turn off led 1')) {
+        fetch('http://192.168.116.240/LED1=LOW');
+
+            document.getElementById("led1-status").innerText = "LED 1 = OFF";
+
+      } else if (command.includes('turn on led two') || command.includes('turn on led 2')) {
+        fetch('http://192.168.116.240/LED2=HIGH');
+         document.getElementById("led2-status").innerText = "LED 2 = ON";
+
+      } else if (command.includes('turn off led two') || command.includes('turn off led 2')) {
+        fetch('http://192.168.116.240/LED2=LOW');
+         document.getElementById("led2-status").innerText = "LED 2 = OFF";
+
+      } else if (command.includes('turn on led three') || command.includes('turn on led 3')) {
+        fetch('http://192.168.116.240/LED3=HIGH');
+     
+            document.getElementById("led3-status").innerText = "LED 3 = ON";
+     
+      } else if (command.includes('turn off led three') || command.includes('turn off led 3')) {
+        fetch('http://192.168.116.240/LED3=LOW');
+    
+            document.getElementById("led3-status").innerText = "LED 3 = OFF";
+          } else if (command.includes('turn on led four') || command.includes('turn on led 4')) {
+        fetch('http://192.168.116.240/LED4=HIGH');
+    
+            document.getElementById("led4-status").innerText = "LED 4 = ON";
+        
+      } else if (command.includes('turn off led four') || command.includes('turn off led 4')) {
+        fetch('http://192.168.116.240/LED4=LOW');
+            document.getElementById("led4-status").innerText = "LED 4 = OFF";
+         
+      } else if (command.includes('turn off') || command.includes('all off')) {
+        fetch('http://192.168.116.240/LED=LOW')
+          .then(response => {
+            document.getElementById("led1-status").innerText = "LED 1 = OFF";
+            document.getElementById("led2-status").innerText = "LED 2 = OFF";
+            document.getElementById("led3-status").innerText = "LED 3 = OFF";
+            document.getElementById("led4-status").innerText = "LED 4 = OFF";
+          })
+          .catch(error => {
+            document.getElementById("status").innerText = "Error turning off LEDs: " + error;
+          });
+      } else {
+        document.getElementById("status").innerText = "Unrecognized command: " + command;
+      }
+    };
+    
+
+    // When speech recognition ends
+    recognition.onend = function() {
+      recognition.stop();
+    };
+
+    // Handle any speech recognition errors
+    recognition.onerror = function(event) {
+      document.getElementById("status").innerText = "Speech recognition error: " + event.error;
+    };
+
+
+  </script>
+
+</body>
+</html>
